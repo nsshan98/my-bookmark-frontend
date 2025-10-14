@@ -1,0 +1,157 @@
+"use client";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../atoms/form";
+import { useForm } from "react-hook-form";
+import { signupSchema, SignupSchemaType } from "@/zod/auth-schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "../atoms/button";
+import { Input } from "../atoms/input";
+import { GoEye } from "react-icons/go";
+import { GoEyeClosed } from "react-icons/go";
+import { useState } from "react";
+import { doUserSignIn } from "@/action/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Spinner } from "../atoms/spinner";
+import Link from "next/link";
+
+const SignupComponent = () => {
+  const router = useRouter();
+  const signupForm = useForm<SignupSchemaType>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(signupSchema),
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onSubmit = async (data: SignupSchemaType) => {
+    try {
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+
+      const response = await doUserSignIn(formData);
+      if (!response?.error) {
+        router.push("/dashboard");
+        toast("Login Successful");
+      }
+    } catch (error) {
+      if (error) {
+        toast("Login Failed. Please check your credentials and try again.");
+      }
+    }
+  };
+  return (
+    <div className="max-w-lg h-dvh mx-auto my-auto flex flex-col gap-10 justify-center">
+      <p className="text-center text-amber-100 text-5xl">Create an account</p>
+      <div>
+        <Form {...signupForm}>
+          <form
+            onSubmit={signupForm.handleSubmit(onSubmit)}
+            className="space-y-8"
+          >
+            <FormField
+              control={signupForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-amber-50">Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-amber-50"
+                      placeholder="John Doe"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-amber-50">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-amber-50"
+                      placeholder="email@example.com"
+                      type="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={signupForm.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-amber-50">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-amber-50"
+                      placeholder="********"
+                      type={showPassword ? "text" : "password"}
+                      endIcon={
+                        showPassword ? (
+                          <GoEyeClosed
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        ) : (
+                          <GoEye
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        )
+                      }
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {signupForm.formState.isSubmitting ? (
+              <Button
+                type="submit"
+                variant={"outline"}
+                disabled={signupForm.formState.isSubmitting}
+              >
+                <Spinner /> Creating Account
+              </Button>
+            ) : (
+              <Button type="submit" variant={"outline"}>
+                Signup
+              </Button>
+            )}
+          </form>
+        </Form>
+        <p className="text-cyan-200 mt-4">
+          Already have an account?{" "}
+          <Link
+            href="/auth/login"
+            className="text-emerald-400 hover:text-emerald-300"
+          >
+            Login
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default SignupComponent;
