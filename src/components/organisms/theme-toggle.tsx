@@ -1,14 +1,20 @@
 "use client";
 
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
 import { Button } from "@/components/atoms/button";
 
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
-  const theme = localStorage.getItem("theme");
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Only run on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // prevent SSR from reading theme
 
   return (
     <Button

@@ -53,7 +53,7 @@ const SignupComponent = () => {
   };
   return (
     <div className="max-w-lg h-dvh mx-auto my-auto flex flex-col gap-10 justify-center">
-      <p className="text-center text-amber-100 text-5xl">Create an account</p>
+      <p className="text-center text-5xl">Create an account</p>
       <div>
         <Form {...signupForm}>
           <form
@@ -65,14 +65,9 @@ const SignupComponent = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-amber-50">Name</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input
-                      className="bg-amber-50"
-                      placeholder="John Doe"
-                      type="text"
-                      {...field}
-                    />
+                    <Input placeholder="John Doe" type="text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,10 +78,9 @@ const SignupComponent = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-amber-50">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-amber-50"
                       placeholder="email@example.com"
                       type="email"
                       {...field}
@@ -101,10 +95,9 @@ const SignupComponent = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-amber-50">Password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-amber-50"
                       placeholder="********"
                       type={showPassword ? "text" : "password"}
                       endIcon={
@@ -140,7 +133,7 @@ const SignupComponent = () => {
             )}
           </form>
         </Form>
-        <p className="text-cyan-200 mt-4">
+        <p className="mt-4">
           Already have an account?{" "}
           <Link
             href="/auth/login"

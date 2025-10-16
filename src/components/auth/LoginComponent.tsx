@@ -52,7 +52,7 @@ const LoginComponent = () => {
   };
   return (
     <div className="max-w-md h-dvh mx-auto my-auto flex flex-col gap-10 justify-center">
-      <p className="text-center text-amber-100 text-5xl">Bookmark Store</p>
+      <p className="text-center text-5xl">Bookmark Store</p>
       <div>
         <Form {...loginForm}>
           <form
@@ -64,10 +64,9 @@ const LoginComponent = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-amber-50">Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-amber-50"
                       placeholder="email@example.com"
                       type="email"
                       {...field}
@@ -82,10 +81,9 @@ const LoginComponent = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-amber-50">Password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-amber-50"
                       placeholder="********"
                       type={showPassword ? "text" : "password"}
                       endIcon={
@@ -121,7 +119,7 @@ const LoginComponent = () => {
             )}
           </form>
         </Form>
-        <p className="text-cyan-200 mt-4">
+        <p className="mt-4">
           Don&apos;t have an account?{" "}
           <Link
             href="/auth/signup"

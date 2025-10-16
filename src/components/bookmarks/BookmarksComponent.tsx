@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/atoms/select";
-import { ThemeToggle } from "../theme-toggle/ThemeToggle";
 
 export default function BookmarksComponent() {
   return (
@@ -31,7 +30,6 @@ export default function BookmarksComponent() {
               <Plus className="w-4 h-4 mr-2" />
               Add Bookmark
             </Button>
-            <ThemeToggle />
           </div>
         </div>
       </header>
