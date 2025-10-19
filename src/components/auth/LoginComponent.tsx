@@ -107,13 +107,13 @@ const LoginComponent = () => {
             {loginForm.formState.isSubmitting ? (
               <Button
                 type="submit"
-                variant={"outline"}
+                variant={"default"}
                 disabled={loginForm.formState.isSubmitting}
               >
                 <Spinner /> Authenticating
               </Button>
             ) : (
-              <Button type="submit" variant={"outline"}>
+              <Button type="submit" variant={"default"}>
                 Submit
               </Button>
             )}

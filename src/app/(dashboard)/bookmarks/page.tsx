@@ -1,4 +1,4 @@
-import BookmarksComponent from "@/components/bookmarks/BookmarksComponent";
+import BookmarksComponent from "@/components/bookmarks/bookmarks-component";
 import React from "react";
 
 const BookmarksPage = () => {

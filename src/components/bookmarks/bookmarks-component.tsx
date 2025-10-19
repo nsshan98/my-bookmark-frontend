@@ -1,3 +1,4 @@
+"use client";
 import { Bookmark, Tag, Search, Plus, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/atoms/button";
 import { Card } from "@/components/atoms/card";
@@ -9,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/atoms/select";
+import AddBookmark from "./add-bookmark";
 
 export default function BookmarksComponent() {
   return (
@@ -26,10 +28,7 @@ export default function BookmarksComponent() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button className="bg-gray-900 hover:bg-gray-800 text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Bookmark
-            </Button>
+            <AddBookmark />
           </div>
         </div>
       </header>

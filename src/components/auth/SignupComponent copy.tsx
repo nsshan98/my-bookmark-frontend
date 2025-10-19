@@ -121,13 +121,13 @@ const SignupComponent = () => {
             {signupForm.formState.isSubmitting ? (
               <Button
                 type="submit"
-                variant={"outline"}
+                variant={"default"}
                 disabled={signupForm.formState.isSubmitting}
               >
                 <Spinner /> Creating Account
               </Button>
             ) : (
-              <Button type="submit" variant={"outline"}>
+              <Button type="submit" variant={"default"}>
                 Signup
               </Button>
             )}
