@@ -4,7 +4,6 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { Toaster } from "@/components/atoms/sonner";
-import { ThemeProvider } from "@/lib/theme-provider";
 import Providers from "./providers";
 
 const geistSans = Geist({
@@ -35,17 +34,10 @@ export default async function RootLayout({
       >
         {/* Your Content/Components */}
         <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SessionProvider session={session}>
-              {children}
-              <Toaster />
-            </SessionProvider>
-          </ThemeProvider>
+          <SessionProvider session={session}>
+            {children}
+            <Toaster />
+          </SessionProvider>
         </Providers>
       </body>
     </html>

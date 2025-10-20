@@ -6,3 +6,14 @@ export const bookmarksSchema = z.object({
 });
 
 export type BookmarksSchemaType = z.infer<typeof bookmarksSchema>;
+
+export type Bookmarks = {
+  id: string;
+  url: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+  image?: string;
+  description?: string;
+  tags?: string[];
+};

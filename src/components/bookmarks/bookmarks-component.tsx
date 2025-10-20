@@ -11,8 +11,12 @@ import {
   SelectValue,
 } from "@/components/atoms/select";
 import AddBookmark from "./add-bookmark";
+import { useShowBookmarks } from "@/hooks/reactQuery/bookmarkQuery";
+import BookmarkCard from "./card";
+import { Bookmarks } from "@/zod/bookmarks-schema";
 
 export default function BookmarksComponent() {
+  const { showBookmarksQuery } = useShowBookmarks();
   return (
     <div className="min-h-screen ">
       {/* Header */}
@@ -107,28 +111,36 @@ export default function BookmarksComponent() {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" size="icon" className="border-gray-200">
+            <Button variant="default" size="icon" className="border-gray-200">
               <ArrowUpDown className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
         {/* Empty State */}
-        <Card className="p-16 border border-gray-200">
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6">
-              <Bookmark className="w-12 h-12" />
+        {showBookmarksQuery.data?.data?.lenght === 0 && (
+          <Card className="p-16 border border-gray-200">
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6">
+                <Bookmark className="w-12 h-12" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">No bookmarks yet</h2>
+              <p className="mb-6 max-w-md">
+                Start building your collection by adding your first bookmark
+              </p>
+              <Button onClick={() => <AddBookmark />}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Your First Bookmark
+              </Button>
             </div>
-            <h2 className="text-2xl font-bold mb-2">No bookmarks yet</h2>
-            <p className="mb-6 max-w-md">
-              Start building your collection by adding your first bookmark
-            </p>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Your First Bookmark
-            </Button>
-          </div>
-        </Card>
+          </Card>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          {showBookmarksQuery.data?.data?.map((bookmarks: Bookmarks) => (
+            <BookmarkCard key={bookmarks.id} bookmarks={bookmarks} />
+          ))}
+        </div>
       </main>
     </div>
   );
