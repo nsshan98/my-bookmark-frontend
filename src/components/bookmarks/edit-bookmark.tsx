@@ -7,10 +7,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/atoms/dialog";
 import { Input } from "@/components/atoms/input";
-import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -23,62 +21,48 @@ import {
 import { Spinner } from "../atoms/spinner";
 import { bookmarksSchema, BookmarksSchemaType } from "@/zod/bookmarks-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useCreateBookmark,
-  useUrlInfo,
-} from "@/hooks/reactQuery/bookmarkQuery";
+import { useEditBookmark, useUrlInfo } from "@/hooks/reactQuery/bookmarkQuery";
 import { useState } from "react";
 import { toast } from "sonner";
-import { isAxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../atoms/avatar";
 
-export default function AddBookmark() {
-  const router = useRouter();
+interface EditBookmarkProps {
+  bookmarkId: string;
+  open: boolean;
+  onClose: () => void;
+  data: BookmarksSchemaType;
+}
+
+export default function EditBookmark({
+  bookmarkId,
+  open,
+  onClose,
+  data,
+}: EditBookmarkProps) {
   const { urlInfoMutation } = useUrlInfo();
-  const { bookmarkCreateMutation } = useCreateBookmark();
+  const { bookmarkEditMutation } = useEditBookmark(bookmarkId);
 
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const handleClose = () => setOpen(false);
   const bookmarkForm = useForm<BookmarksSchemaType>({
-    defaultValues: {
-      url: "",
-      title: "",
-      logo: "",
-      image: "",
+    values: {
+      url: data.url,
+      title: data.title,
     },
     resolver: zodResolver(bookmarksSchema),
   });
 
+  console.log(data);
+
   const onSubmit = async (data: BookmarksSchemaType) => {
     console.log(data);
-    await bookmarkCreateMutation.mutateAsync(data, {
+    await bookmarkEditMutation.mutateAsync(data, {
       onSuccess: () => {
         toast("Bookmark added successfully");
-        bookmarkForm.resetField("url");
-        bookmarkForm.resetField("title");
-        bookmarkForm.resetField("logo");
-        bookmarkForm.resetField("image");
-        handleClose();
-        router.push("/bookmarks");
-      },
-      onError: (error: Error) => {
-        if (isAxiosError(error)) {
-          toast.error(error.response?.data.message);
-        }
       },
     });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button startIcon={<Plus />} variant="default">
-          Add Bookmark
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         onInteractOutside={(e) => {
           e.preventDefault();
@@ -106,7 +90,6 @@ export default function AddBookmark() {
                     <FormLabel>URL</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
                         placeholder="https://example.com"
                         type="url"
                         {...field}
@@ -117,8 +100,6 @@ export default function AddBookmark() {
                           field.onChange(e);
                           if (!urlPattern.test(value)) {
                             bookmarkForm.setValue("title", "");
-                            bookmarkForm.setValue("logo", "");
-                            bookmarkForm.setValue("image", "");
                           }
                           if (urlPattern.test(value)) {
                             setLoading(true);
@@ -129,14 +110,6 @@ export default function AddBookmark() {
                                   bookmarkForm.setValue(
                                     "title",
                                     data.data?.data?.title
-                                  );
-                                  bookmarkForm.setValue(
-                                    "logo",
-                                    data.data?.data?.logo
-                                  );
-                                  bookmarkForm.setValue(
-                                    "image",
-                                    data.data?.data?.image || ""
                                   );
                                   setLoading(false);
                                 },
@@ -160,63 +133,41 @@ export default function AddBookmark() {
                   </FormItem>
                 )}
               />
-              {urlInfoMutation.data?.data?.success && (
-                <div className="relative">
-                  <div>
-                    <FormField
-                      control={bookmarkForm.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="pl-12"
-                              placeholder="Bookmark Title"
-                              type="text"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="absolute left-2 top-6 ">
-                    <FormField
-                      control={bookmarkForm.control}
-                      name="logo"
-                      render={({ field }) => (
-                        <FormItem>
-                          {/* <FormLabel>Logo</FormLabel> */}
-                          <FormControl>
-                            <Avatar>
-                              <AvatarImage
-                                src={field.value}
-                                alt="Logo"
-                                className="w-8 h-8 "
-                              />
-                              <AvatarFallback>BK</AvatarFallback>
-                            </Avatar>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-              )}
+              <FormField
+                control={bookmarkForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Bookmark Title"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <DialogFooter>
                 {bookmarkForm.formState.isSubmitting ? (
                   <Button
+                    type="submit"
                     variant={"default"}
                     disabled={bookmarkForm.formState.isSubmitting}
                   >
                     <Spinner /> Saving
                   </Button>
                 ) : (
-                  <Button type="submit" variant={"default"} disabled={loading}>
+                  <Button
+                    type="submit"
+                    variant={"default"}
+                    // onClick={() => {
+                    //   bookmarkForm.handleSubmit(onSubmit);
+                    // }}
+                  >
                     Save
                   </Button>
                 )}

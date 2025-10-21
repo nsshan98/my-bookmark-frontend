@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { Toaster } from "@/components/atoms/sonner";
 import { DashbaordHeader } from "@/components/organisms/dashboard-header";
 import { AppSidebar } from "@/components/organisms/app-sidebar";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
@@ -14,6 +15,9 @@ export default async function DashboardLayout({
   children: ReactNode;
 }) {
   const session = await auth();
+  if (!session) {
+    return redirect("/login");
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>

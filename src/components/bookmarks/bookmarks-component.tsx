@@ -1,7 +1,7 @@
 "use client";
 import { Bookmark, Tag, Search, Plus, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/atoms/button";
-import { Card } from "@/components/atoms/card";
+import { Card, CardContent } from "@/components/atoms/card";
 import { Input } from "@/components/atoms/input";
 import {
   Select,
@@ -12,8 +12,9 @@ import {
 } from "@/components/atoms/select";
 import AddBookmark from "./add-bookmark";
 import { useShowBookmarks } from "@/hooks/reactQuery/bookmarkQuery";
-import BookmarkCard from "./card";
+import BookmarkCard from "./bookmark-card";
 import { Bookmarks } from "@/zod/bookmarks-schema";
+import { Skeleton } from "../atoms/skeleton";
 
 export default function BookmarksComponent() {
   const { showBookmarksQuery } = useShowBookmarks();
@@ -118,7 +119,7 @@ export default function BookmarksComponent() {
         </div>
 
         {/* Empty State */}
-        {showBookmarksQuery.data?.data?.lenght === 0 && (
+        {showBookmarksQuery.data?.data?.length === 0 && (
           <Card className="p-16 border border-gray-200">
             <div className="flex flex-col items-center justify-center text-center">
               <div className="w-24 h-24 rounded-full flex items-center justify-center mb-6">
@@ -134,6 +135,40 @@ export default function BookmarksComponent() {
               </Button>
             </div>
           </Card>
+        )}
+
+        {/* Loading State */}
+        {showBookmarksQuery.isLoading && (
+          <div className="grid grid-cols-2 gap-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card key={index}>
+                <div className="h-48 flex items-center justify-center">
+                  <Skeleton className="w-120 h-48" />
+                </div>
+                <CardContent>
+                  <div className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors">
+                    <Skeleton className="w-1/2 h-4" />
+                  </div>
+                  <div className="text-sm text-gray-600 mb-3">
+                    <Skeleton className="w-1/2 h-3" />
+                  </div>
+                  <div className="text-xs text-gray-500 mb-3 truncate">
+                    <Skeleton className="w-1/2 h-3" />
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                    <span className="text-xs text-gray-500">
+                      <Skeleton className="w-1/2 h-3" />
+                    </span>
+
+                    <div className="flex gap-1">
+                      <Skeleton className="w-30 h-6" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
 
         <div className="grid grid-cols-2 gap-3">

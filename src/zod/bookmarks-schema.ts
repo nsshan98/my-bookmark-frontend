@@ -3,6 +3,8 @@ import { z } from "zod";
 export const bookmarksSchema = z.object({
   url: z.url(),
   title: z.string(),
+  logo: z.string().optional(),
+  image: z.string().optional(),
 });
 
 export type BookmarksSchemaType = z.infer<typeof bookmarksSchema>;

@@ -48,4 +48,42 @@ const useCreateBookmark = () => {
   return { bookmarkCreateMutation };
 };
 
-export { useUrlInfo, useShowBookmarks, useCreateBookmark };
+// ===============================|| EDIT BOOKMARK ||============================== //
+const useEditBookmark = (bookmarkId: string) => {
+  const queryClient = useQueryClient();
+  const bookmarkEditMutation = useMutation({
+    mutationFn: async (data: BookmarksSchemaType) => {
+      return await axiosClient.patch(`/bookmark/update/${bookmarkId}`, data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarks"],
+      });
+    },
+  });
+  return { bookmarkEditMutation };
+};
+
+// ===============================|| DELETE BOOKMARK ||============================== //
+const useDeleteBookmark = () => {
+  const queryClient = useQueryClient();
+  const bookmarkDeleteMutation = useMutation({
+    mutationFn: async (bookmarkId: string) => {
+      return await axiosClient.delete(`/bookmark/delete/${bookmarkId}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarks"],
+      });
+    },
+  });
+  return { bookmarkDeleteMutation };
+};
+
+export {
+  useUrlInfo,
+  useShowBookmarks,
+  useCreateBookmark,
+  useEditBookmark,
+  useDeleteBookmark,
+};

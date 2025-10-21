@@ -1,26 +1,26 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/atoms/card";
 import { Button } from "@/components/atoms/button";
-import { ExternalLink, Trash2, Tag } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/atoms/alert-dialog";
+import { ExternalLink, SquarePen, Trash2, Tag } from "lucide-react";
 import { Bookmarks } from "@/zod/bookmarks-schema";
 import Image from "next/image";
+import EditBookmark from "./edit-bookmark";
+import DeleteBookmark from "./delete-bookmark";
 
 export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
   const [imageError, setImageError] = useState(false);
-  console.log(bookmarks);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedBookmark, setSelectedBookmark] = useState<{
+    id: string | null;
+    openState: "edit" | "delete" | null;
+  }>({
+    id: null,
+    openState: null,
+  });
 
-  const { url, title } = bookmarks;
+  console.log(selectedBookmark);
+
+  const { id, url, title } = bookmarks;
 
   const formatDate = (dateString: Date) => {
     const date = new Date(dateString);
@@ -29,6 +29,16 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
       day: "numeric",
       year: "numeric",
     });
+  };
+
+  const handleOpenEditDialog = () => {
+    setSelectedBookmark({ id: id, openState: "edit" });
+    setOpenDialog(true);
+  };
+
+  const handleOpenDeleteDialog = () => {
+    setSelectedBookmark({ id: id, openState: "delete" });
+    setOpenDialog(true);
   };
 
   return (
@@ -109,7 +119,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
             {formatDate(bookmarks?.createdAt || "")}
           </span>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button
               size="sm"
               variant="ghost"
@@ -119,41 +129,43 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
               <ExternalLink className="w-4 h-4" />
             </Button>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="hover:bg-red-50 hover:text-red-600"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete Bookmark</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to delete this bookmark? This action
-                    cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-gray-900 hover:bg-gray-800 hover:text-white">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    // onClick={() => onDelete(bookmark.id)}
-                    className="bg-red-600 hover:bg-red-700"
-                    // data-testid={`delete-confirm-${bookmark.id}`}
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="hover:bg-teal-50 hover:text-teal-600"
+              onClick={handleOpenEditDialog}
+            >
+              <SquarePen className="w-4 h-4" />
+            </Button>
+
+            <Button
+              size="sm"
+              variant="ghost"
+              className="hover:bg-teal-50 hover:text-teal-600"
+              onClick={handleOpenDeleteDialog}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </CardContent>
+
+      {selectedBookmark && selectedBookmark.openState === "edit" && (
+        <EditBookmark
+          bookmarkId={selectedBookmark.id || ""}
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          data={bookmarks}
+        />
+      )}
+
+      {selectedBookmark && selectedBookmark.openState === "delete" && (
+        <DeleteBookmark
+          bookmarkId={selectedBookmark.id || ""}
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+        />
+      )}
     </Card>
   );
 }
