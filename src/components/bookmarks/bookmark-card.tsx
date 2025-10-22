@@ -92,12 +92,12 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
         </p>
 
         {/* Tags */}
-        {bookmarks?.tags && bookmarks.tags.length > 0 && (
+        {bookmarks?.category && bookmarks?.category.length > 0 && (
           <div
             className="flex flex-wrap gap-2 mb-4"
             // data-testid={`bookmark-tags-${bookmark.id}`}
           >
-            {bookmarks.tags.map((tag, index) => (
+            {bookmarks.category.map((tag, index) => (
               <span
                 key={index}
                 className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-700"

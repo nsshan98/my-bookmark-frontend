@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../atoms/avatar";
+// import { Command, CommandEmpty, CommandInput } from "../atoms/command";
 
 export default function AddBookmark() {
   const router = useRouter();
@@ -40,6 +41,7 @@ export default function AddBookmark() {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  // const [query, setQuery] = useState("");
 
   const handleClose = () => setOpen(false);
   const bookmarkForm = useForm<BookmarksSchemaType>({
@@ -48,9 +50,14 @@ export default function AddBookmark() {
       title: "",
       logo: "",
       image: "",
+      category: [],
     },
     resolver: zodResolver(bookmarksSchema),
   });
+
+  // const handleCreateCategory = () => {
+  //   console.log("created");
+  // };
 
   const onSubmit = async (data: BookmarksSchemaType) => {
     console.log(data);
@@ -160,52 +167,85 @@ export default function AddBookmark() {
                   </FormItem>
                 )}
               />
-              {urlInfoMutation.data?.data?.success && (
-                <div className="relative">
-                  <div>
-                    <FormField
-                      control={bookmarkForm.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input
-                              className="pl-12"
-                              placeholder="Bookmark Title"
-                              type="text"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="absolute left-2 top-6 ">
-                    <FormField
-                      control={bookmarkForm.control}
-                      name="logo"
-                      render={({ field }) => (
-                        <FormItem>
-                          {/* <FormLabel>Logo</FormLabel> */}
-                          <FormControl>
-                            <Avatar>
-                              <AvatarImage
-                                src={field.value}
-                                alt="Logo"
-                                className="w-8 h-8 "
+              {urlInfoMutation.data?.data?.success === true &&
+                bookmarkForm.watch("url") && (
+                  <div className="relative">
+                    <div>
+                      <FormField
+                        control={bookmarkForm.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="pl-12"
+                                placeholder="Bookmark Title"
+                                type="text"
+                                {...field}
                               />
-                              <AvatarFallback>BK</AvatarFallback>
-                            </Avatar>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="absolute left-2 top-6 ">
+                      <FormField
+                        control={bookmarkForm.control}
+                        name="logo"
+                        render={({ field }) => (
+                          <FormItem>
+                            {/* <FormLabel>Logo</FormLabel> */}
+                            <FormControl>
+                              <Avatar>
+                                <AvatarImage
+                                  src={field.value}
+                                  alt="Logo"
+                                  className="w-8 h-8 "
+                                />
+                                <AvatarFallback>BK</AvatarFallback>
+                              </Avatar>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+              {/* <div>
+                <FormField
+                  control={bookmarkForm.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Command>
+                          <CommandInput
+                            placeholder="Select a category"
+                            value={query}
+                            onValueChange={setQuery}
+                          />
+                          <CommandEmpty>
+                            <div
+                              onClick={handleCreateCategory}
+                              className="cursor-pointer"
+                            >
+                              {loading
+                                ? "Creating....."
+                                : `Create a category ${query}`}
+                            </div>
+                          </CommandEmpty>
+                        </Command>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div> */}
 
               <DialogFooter>
                 {bookmarkForm.formState.isSubmitting ? (
