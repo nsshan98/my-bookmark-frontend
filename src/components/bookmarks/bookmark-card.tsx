@@ -6,6 +6,7 @@ import { Bookmarks } from "@/zod/bookmarks-schema";
 import Image from "next/image";
 import EditBookmark from "./edit-bookmark";
 import DeleteBookmark from "./delete-bookmark";
+import dayjs from "dayjs";
 
 export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
   const [imageError, setImageError] = useState(false);
@@ -22,14 +23,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
 
   const { id, url, title } = bookmarks;
 
-  const formatDate = (dateString: Date) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
+  console.log(bookmarks);
 
   const handleOpenEditDialog = () => {
     setSelectedBookmark({ id: id, openState: "edit" });
@@ -48,13 +42,15 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
     >
       {/* Image */}
       {bookmarks?.image && !imageError ? (
-        <div className="relative h-48 overflow-hidden bg-gradient-to-br from-teal-100 to-blue-100">
+        <div className="relative h-48 overflow-hidden">
           <Image
             src={bookmarks.image || ""}
             alt={title}
+            width={500}
+            height={500}
+            priority
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             onError={() => setImageError(true)}
-            // data-testid={`bookmark-image-${bookmark.id}`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -66,37 +62,23 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
 
       <CardContent className="p-5">
         {/* Title */}
-        <h3
-          className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors"
-          //   data-testid={`bookmark-title-${bookmark.id}`}
-        >
+        <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors">
           {title || "Untitled"}
         </h3>
 
         {/* Description */}
         {bookmarks?.description && (
-          <p
-            className="text-sm text-gray-600 mb-3 line-clamp-2"
-            // data-testid={`bookmark-description-${bookmark.id}`}
-          >
+          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
             {bookmarks?.description}
           </p>
         )}
 
         {/* URL */}
-        <p
-          className="text-xs text-gray-500 mb-3 truncate"
-          //   data-testid={`bookmark-url-${bookmark.id}`}
-        >
-          {bookmarks?.url}
-        </p>
+        <p className="text-xs text-gray-500 mb-3 truncate">{bookmarks?.url}</p>
 
         {/* Tags */}
         {bookmarks?.category && bookmarks?.category.length > 0 && (
-          <div
-            className="flex flex-wrap gap-2 mb-4"
-            // data-testid={`bookmark-tags-${bookmark.id}`}
-          >
+          <div className="flex flex-wrap gap-2 mb-4">
             {bookmarks.category.map((tag, index) => (
               <span
                 key={index}
@@ -112,11 +94,8 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-          <span
-            className="text-xs text-gray-500"
-            // data-testid={`bookmark-date-${bookmark.id}`}
-          >
-            {formatDate(bookmarks?.createdAt || "")}
+          <span className="text-xs text-gray-500">
+            {dayjs(bookmarks?.created_at).format("MMM DD, YYYY")}
           </span>
 
           <div className="flex gap-1">

@@ -14,7 +14,7 @@ export type Bookmarks = {
   id: string;
   url: string;
   title: string;
-  createdAt: Date;
+  created_at: Date;
   updatedAt: Date;
   image?: string;
   description?: string;
