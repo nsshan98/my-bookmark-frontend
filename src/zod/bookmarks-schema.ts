@@ -5,7 +5,7 @@ export const bookmarksSchema = z.object({
   title: z.string(),
   logo: z.string().optional(),
   image: z.string().optional(),
-  category: z.array(z.string()).optional(),
+  category_ids: z.array(z.string()).optional(),
 });
 
 export type BookmarksSchemaType = z.infer<typeof bookmarksSchema>;
@@ -18,5 +18,16 @@ export type Bookmarks = {
   updatedAt: Date;
   image?: string;
   description?: string;
-  category?: string[];
+  category_ids?: string[];
+};
+
+type BookmarksCategory = {
+  id: string;
+  title: string;
+};
+
+export type BookmarksWithCategory = {
+  id: string;
+  name: string;
+  bookmarks: BookmarksCategory[];
 };

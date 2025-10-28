@@ -11,13 +11,19 @@ import {
   SelectValue,
 } from "@/components/atoms/select";
 import AddBookmark from "./add-bookmark";
-import { useShowBookmarks } from "@/hooks/reactQuery/bookmarkQuery";
-import BookmarkCard from "./bookmark-card";
-import { Bookmarks } from "@/zod/bookmarks-schema";
+import {
+  useShowBookmarks,
+  useShowBookmarksWithCategory,
+} from "@/hooks/reactQuery/bookmarkQuery";
+// import BookmarkCard from "./bookmark-card";
+import { BookmarksWithCategory } from "@/zod/bookmarks-schema";
 import { Skeleton } from "../atoms/skeleton";
+import BookmarksWithCategoryComponent from "./bookmarks-with-category";
 
 export default function BookmarksComponent() {
   const { showBookmarksQuery } = useShowBookmarks();
+  const { showBookmarksWithCategoryQuery } = useShowBookmarksWithCategory();
+  console.log(showBookmarksWithCategoryQuery.data);
   return (
     <div className="min-h-screen ">
       {/* Header */}
@@ -171,10 +177,19 @@ export default function BookmarksComponent() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
-          {showBookmarksQuery.data?.data?.map((bookmarks: Bookmarks) => (
+        <div>
+          {/* {showBookmarksQuery.data?.data?.map((bookmarks: Bookmarks) => (
             <BookmarkCard key={bookmarks.id} bookmarks={bookmarks} />
-          ))}
+          ))} */}
+
+          {showBookmarksWithCategoryQuery.data?.data?.map(
+            (bookmarks: BookmarksWithCategory) => (
+              <BookmarksWithCategoryComponent
+                key={bookmarks.id}
+                bookmarksCategory={bookmarks}
+              />
+            )
+          )}
         </div>
       </main>
     </div>

@@ -50,7 +50,7 @@ export default function AddBookmark() {
       title: "",
       logo: "",
       image: "",
-      category: [],
+      category_ids: [] as string[],
     },
     resolver: zodResolver(bookmarksSchema),
   });

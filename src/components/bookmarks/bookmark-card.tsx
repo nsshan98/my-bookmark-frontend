@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/atoms/card";
 import { Button } from "@/components/atoms/button";
-import { ExternalLink, SquarePen, Trash2, Tag } from "lucide-react";
+import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
 import { Bookmarks } from "@/zod/bookmarks-schema";
 import Image from "next/image";
 import EditBookmark from "./edit-bookmark";
@@ -19,11 +19,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
     openState: null,
   });
 
-  console.log(selectedBookmark);
-
   const { id, url, title } = bookmarks;
-
-  console.log(bookmarks);
 
   const handleOpenEditDialog = () => {
     setSelectedBookmark({ id: id, openState: "edit" });
@@ -77,7 +73,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
         <p className="text-xs text-gray-500 mb-3 truncate">{bookmarks?.url}</p>
 
         {/* Tags */}
-        {bookmarks?.category && bookmarks?.category.length > 0 && (
+        {/* {bookmarks?.category && bookmarks?.category.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {bookmarks.category.map((tag, index) => (
               <span
@@ -90,7 +86,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
               </span>
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-200">

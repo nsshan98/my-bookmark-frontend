@@ -18,7 +18,6 @@ const useUrlInfo = () => {
 };
 
 // ===============================|| SHOW ALL BOOKMARKS ||============================== //
-
 const useShowBookmarks = () => {
   const showBookmarksQuery = useQuery({
     queryKey: ["bookmarks"],
@@ -30,6 +29,22 @@ const useShowBookmarks = () => {
     staleTime: 1000 * 60 * 10,
   });
   return { showBookmarksQuery };
+};
+
+// ===============================|| SHOW ALL BOOKMARKS BY CATEGORY ||============================== //
+const useShowBookmarksWithCategory = () => {
+  const showBookmarksWithCategoryQuery = useQuery({
+    queryKey: ["bookmarks-with-category"],
+    queryFn: async () => {
+      const { data } = await axiosClient.get(
+        "/bookmark/bookmarks-with-category/"
+      );
+      return data;
+    },
+    retry: false,
+    staleTime: 1000 * 60 * 10,
+  });
+  return { showBookmarksWithCategoryQuery };
 };
 
 // ===============================|| CREATE NEW BOOKMARK ||============================== //
@@ -83,6 +98,7 @@ const useDeleteBookmark = () => {
 export {
   useUrlInfo,
   useShowBookmarks,
+  useShowBookmarksWithCategory,
   useCreateBookmark,
   useEditBookmark,
   useDeleteBookmark,
