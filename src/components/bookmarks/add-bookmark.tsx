@@ -32,7 +32,11 @@ import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../atoms/avatar";
-// import { Command, CommandEmpty, CommandInput } from "../atoms/command";
+import {
+  useCreateCategory,
+  useShowCategory,
+} from "@/hooks/reactQuery/categoryQuery";
+import { MultiCategorySelector } from "../category/multi-selector-category";
 
 export default function AddBookmark() {
   const router = useRouter();
@@ -41,33 +45,29 @@ export default function AddBookmark() {
 
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  // const [query, setQuery] = useState("");
 
   const handleClose = () => setOpen(false);
+
   const bookmarkForm = useForm<BookmarksSchemaType>({
     defaultValues: {
       url: "",
       title: "",
       logo: "",
       image: "",
-      category_ids: [] as string[],
+      category_ids: [],
     },
     resolver: zodResolver(bookmarksSchema),
   });
 
-  // const handleCreateCategory = () => {
-  //   console.log("created");
-  // };
+  const { showCategoryQuery } = useShowCategory();
+  const { categoryCreateMutation } = useCreateCategory();
 
   const onSubmit = async (data: BookmarksSchemaType) => {
     console.log(data);
     await bookmarkCreateMutation.mutateAsync(data, {
       onSuccess: () => {
         toast("Bookmark added successfully");
-        bookmarkForm.resetField("url");
-        bookmarkForm.resetField("title");
-        bookmarkForm.resetField("logo");
-        bookmarkForm.resetField("image");
+        bookmarkForm.reset();
         handleClose();
         router.push("/bookmarks");
       },
@@ -102,7 +102,7 @@ export default function AddBookmark() {
         <div>
           <Form {...bookmarkForm}>
             <form
-              className="space-y-8"
+              className="space-y-4"
               onSubmit={bookmarkForm.handleSubmit(onSubmit)}
             >
               <FormField
@@ -190,19 +190,18 @@ export default function AddBookmark() {
                         )}
                       />
                     </div>
-                    <div className="absolute left-2 top-6 ">
+                    <div className="absolute left-2 top-6">
                       <FormField
                         control={bookmarkForm.control}
                         name="logo"
                         render={({ field }) => (
                           <FormItem>
-                            {/* <FormLabel>Logo</FormLabel> */}
                             <FormControl>
                               <Avatar>
                                 <AvatarImage
                                   src={field.value}
                                   alt="Logo"
-                                  className="w-8 h-8 "
+                                  className="w-8 h-8"
                                 />
                                 <AvatarFallback>BK</AvatarFallback>
                               </Avatar>
@@ -212,40 +211,50 @@ export default function AddBookmark() {
                         )}
                       />
                     </div>
+                    <div className="mt-4">
+                      <FormField
+                        control={bookmarkForm.control}
+                        name="category_ids"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Categories</FormLabel>
+                            <FormControl>
+                              <MultiCategorySelector
+                                categories={showCategoryQuery.data?.data || []}
+                                isLoading={showCategoryQuery.isLoading}
+                                selectedIds={field.value}
+                                onSelectionChange={(selected) => {
+                                  field.onChange(selected);
+                                }}
+                                onCreateCategory={async (title) => {
+                                  const result =
+                                    await categoryCreateMutation.mutateAsync({
+                                      category_name: title,
+                                    });
+                                  toast.success(
+                                    "Category created successfully"
+                                  );
+                                  return result.data;
+                                }}
+                                onEditCategory={(category) => {
+                                  // TODO: Open edit modal/dialog
+                                  console.log("Edit category:", category);
+                                }}
+                                onDeleteCategory={async (categoryId) => {
+                                  console.log(categoryId);
+                                  toast.success(
+                                    "Category deleted successfully"
+                                  );
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 )}
-
-              {/* <div>
-                <FormField
-                  control={bookmarkForm.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Command>
-                          <CommandInput
-                            placeholder="Select a category"
-                            value={query}
-                            onValueChange={setQuery}
-                          />
-                          <CommandEmpty>
-                            <div
-                              onClick={handleCreateCategory}
-                              className="cursor-pointer"
-                            >
-                              {loading
-                                ? "Creating....."
-                                : `Create a category ${query}`}
-                            </div>
-                          </CommandEmpty>
-                        </Command>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div> */}
 
               <DialogFooter>
                 {bookmarkForm.formState.isSubmitting ? (
