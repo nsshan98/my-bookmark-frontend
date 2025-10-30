@@ -32,11 +32,19 @@ const useCreateCategory = () => {
 };
 
 // ===============================|| EDIT CATEGORY ||============================== //
-const useEditCategory = (categoryId: string) => {
+const useEditCategory = () => {
   const queryClient = useQueryClient();
   const categoryEditMutation = useMutation({
-    mutationFn: async (data: { category_name: string }) => {
-      return await axiosClient.patch(`/category/update/${categoryId}`, data);
+    mutationFn: async ({
+      categoryId,
+      category_name,
+    }: {
+      categoryId: string;
+      category_name: string;
+    }) => {
+      return await axiosClient.patch(`/category/update/${categoryId}`, {
+        category_name,
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({

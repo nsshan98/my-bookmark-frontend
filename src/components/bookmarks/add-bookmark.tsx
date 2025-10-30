@@ -34,6 +34,8 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "../atoms/avatar";
 import {
   useCreateCategory,
+  useDeleteCategory,
+  useEditCategory,
   useShowCategory,
 } from "@/hooks/reactQuery/categoryQuery";
 import { MultiCategorySelector } from "../category/multi-selector-category";
@@ -61,6 +63,8 @@ export default function AddBookmark() {
 
   const { showCategoryQuery } = useShowCategory();
   const { categoryCreateMutation } = useCreateCategory();
+  const { categoryEditMutation } = useEditCategory();
+  const { categoryDeleteMutation } = useDeleteCategory();
 
   const onSubmit = async (data: BookmarksSchemaType) => {
     console.log(data);
@@ -236,12 +240,18 @@ export default function AddBookmark() {
                                   );
                                   return result.data;
                                 }}
-                                onEditCategory={(category) => {
-                                  // TODO: Open edit modal/dialog
+                                onEditCategory={async (category) => {
+                                  await categoryEditMutation.mutateAsync({
+                                    categoryId: category.id,
+                                    category_name: category.category_name,
+                                  });
+                                  toast.success("Category edited successfully");
                                   console.log("Edit category:", category);
                                 }}
                                 onDeleteCategory={async (categoryId) => {
-                                  console.log(categoryId);
+                                  await categoryDeleteMutation.mutateAsync(
+                                    categoryId
+                                  );
                                   toast.success(
                                     "Category deleted successfully"
                                   );
