@@ -58,6 +58,9 @@ const useCreateBookmark = () => {
       queryClient.invalidateQueries({
         queryKey: ["bookmarks"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["bookmarks-with-category"],
+      });
     },
   });
   return { bookmarkCreateMutation };

@@ -3,13 +3,11 @@ import { Card, CardContent } from "@/components/atoms/card";
 import { Button } from "@/components/atoms/button";
 import { ExternalLink, SquarePen, Trash2 } from "lucide-react";
 import { Bookmarks } from "@/zod/bookmarks-schema";
-import Image from "next/image";
 import EditBookmark from "./edit-bookmark";
 import DeleteBookmark from "./delete-bookmark";
 import dayjs from "dayjs";
 
-export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
-  const [imageError, setImageError] = useState(false);
+export default function BookmarkCard({ bookmark }: { bookmark: Bookmarks }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedBookmark, setSelectedBookmark] = useState<{
     id: string | null;
@@ -19,7 +17,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
     openState: null,
   });
 
-  const { id, url, title } = bookmarks;
+  const { id, url, title } = bookmark;
 
   const handleOpenEditDialog = () => {
     setSelectedBookmark({ id: id, openState: "edit" });
@@ -36,26 +34,6 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
       className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-teal-100 bg-white/80 backdrop-blur-sm"
       //   data-testid={`bookmark-card-${bookmark.id}`}
     >
-      {/* Image */}
-      {bookmarks?.image && !imageError ? (
-        <div className="relative h-48 overflow-hidden">
-          <Image
-            src={bookmarks.image || ""}
-            alt={title}
-            width={500}
-            height={500}
-            priority
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            onError={() => setImageError(true)}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </div>
-      ) : (
-        <div className="h-48 bg-gradient-to-br from-teal-100 to-blue-100 flex items-center justify-center">
-          <ExternalLink className="w-12 h-12 text-teal-400" />
-        </div>
-      )}
-
       <CardContent className="p-5">
         {/* Title */}
         <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-teal-600 transition-colors">
@@ -63,14 +41,14 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
         </h3>
 
         {/* Description */}
-        {bookmarks?.description && (
+        {bookmark?.description && (
           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-            {bookmarks?.description}
+            {bookmark?.description}
           </p>
         )}
 
         {/* URL */}
-        <p className="text-xs text-gray-500 mb-3 truncate">{bookmarks?.url}</p>
+        <p className="text-xs text-gray-500 mb-3 truncate">{bookmark?.url}</p>
 
         {/* Tags */}
         {/* {bookmarks?.category && bookmarks?.category.length > 0 && (
@@ -91,7 +69,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-200">
           <span className="text-xs text-gray-500">
-            {dayjs(bookmarks?.created_at).format("MMM DD, YYYY")}
+            {dayjs(bookmark?.created_at).format("MMM DD, YYYY")}
           </span>
 
           <div className="flex gap-1">
@@ -130,7 +108,7 @@ export default function BookmarkCard({ bookmarks }: { bookmarks: Bookmarks }) {
           bookmarkId={selectedBookmark.id || ""}
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          data={bookmarks}
+          data={bookmark}
         />
       )}
 

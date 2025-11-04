@@ -21,9 +21,15 @@ export type Bookmarks = {
   category_ids?: string[];
 };
 
-type BookmarksCategory = {
+export type BookmarksCategory = {
   id: string;
+  url: string;
   title: string;
+  created_at: Date;
+  updatedAt: Date;
+  image?: string;
+  description?: string;
+  category_ids?: string[];
 };
 
 export type BookmarksWithCategory = {
