@@ -6,7 +6,8 @@ export const loginSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  first_name: z.string().min(1, "First Name is required"),
+  last_name: z.string().min(1, "Last Name is required"),
   email: z.email(),
   password: z.string().min(4, {
     message: "Password must be at least 4 characters long",

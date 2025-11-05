@@ -110,7 +110,7 @@ const LoginComponent = () => {
                 variant={"default"}
                 disabled={loginForm.formState.isSubmitting}
               >
-                <Spinner /> Authenticating
+                Authenticating <Spinner />
               </Button>
             ) : (
               <Button type="submit" variant={"default"}>

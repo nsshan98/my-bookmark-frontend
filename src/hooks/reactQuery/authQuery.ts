@@ -1,5 +1,20 @@
 import { axiosClient } from "@/lib/axios-client";
-import { useQuery } from "@tanstack/react-query";
+import { SignupSchemaType } from "@/zod/auth-schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+// ===============================|| SIGN UP ||============================== //
+const useCreateUser = () => {
+  const createUserMutation = useMutation({
+    mutationFn: async (data: SignupSchemaType) => {
+      return axiosClient.post("/user/signup/", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+  });
+  return { createUserMutation };
+};
 
 // ===============================|| USER PROFILE ||============================== //
 const useShowUserProfile = () => {
@@ -15,4 +30,4 @@ const useShowUserProfile = () => {
   return { showUserProfileQuery };
 };
 
-export { useShowUserProfile };
+export { useCreateUser, useShowUserProfile };

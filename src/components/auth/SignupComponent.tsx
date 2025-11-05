@@ -15,42 +15,46 @@ import { Input } from "../atoms/input";
 import { GoEye } from "react-icons/go";
 import { GoEyeClosed } from "react-icons/go";
 import { useState } from "react";
-import { doUserSignIn } from "@/action/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../atoms/spinner";
 import Link from "next/link";
+import { useCreateUser } from "@/hooks/reactQuery/authQuery";
+import { isAxiosError } from "axios";
 
 const SignupComponent = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const { createUserMutation } = useCreateUser();
   const signupForm = useForm<SignupSchemaType>({
     defaultValues: {
-      name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
     },
     resolver: zodResolver(signupSchema),
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const onSubmit = async (data: SignupSchemaType) => {
-    try {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
-
-      const response = await doUserSignIn(formData);
-      if (!response?.error) {
+    await createUserMutation.mutateAsync(data, {
+      onSuccess: () => {
+        toast.success("User created successfully!");
         router.push("/dashboard");
-        toast("Login Successful");
-      }
-    } catch (error) {
-      if (error) {
-        toast("Login Failed. Please check your credentials and try again.");
-      }
-    }
+        // You can redirect the user or show a success message here
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          toast.error(
+            error.response?.data?.message ||
+              "Error creating user. Please try again."
+          );
+        }
+      },
+    });
+    console.log("Form submitted with data:", data);
   };
+
   return (
     <div className="max-w-lg h-dvh mx-auto my-auto flex flex-col gap-10 justify-center">
       <p className="text-center text-5xl">Create an account</p>
@@ -60,19 +64,34 @@ const SignupComponent = () => {
             onSubmit={signupForm.handleSubmit(onSubmit)}
             className="space-y-8"
           >
-            <FormField
-              control={signupForm.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={signupForm.control}
+                name="first_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John" type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={signupForm.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Doe" type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={signupForm.control}
               name="email"
@@ -124,7 +143,7 @@ const SignupComponent = () => {
                 variant={"default"}
                 disabled={signupForm.formState.isSubmitting}
               >
-                <Spinner /> Creating Account
+                Creating Account <Spinner />
               </Button>
             ) : (
               <Button type="submit" variant={"default"}>
