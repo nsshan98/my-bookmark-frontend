@@ -19,7 +19,6 @@ import { doUserSignIn } from "@/action/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../atoms/spinner";
-import Link from "next/link";
 
 const LoginComponent = () => {
   const router = useRouter();
@@ -121,12 +120,15 @@ const LoginComponent = () => {
         </Form>
         <p className="mt-4">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/auth/signup"
-            className="text-emerald-400 hover:text-emerald-300"
+          <Button
+            type="button"
+            disabled={loginForm.formState.isSubmitting}
+            variant="link"
+            onClick={() => router.push("/auth/signup")}
+            className="text-emerald-400 hover:text-emerald-300 p-0 text-md cursor-pointer"
           >
             Register
-          </Link>
+          </Button>
         </p>
       </div>
     </div>

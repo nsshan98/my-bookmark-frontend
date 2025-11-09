@@ -18,7 +18,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Spinner } from "../atoms/spinner";
-import Link from "next/link";
 import { useCreateUser } from "@/hooks/reactQuery/authQuery";
 import { isAxiosError } from "axios";
 
@@ -154,12 +153,15 @@ const SignupComponent = () => {
         </Form>
         <p className="mt-4">
           Already have an account?{" "}
-          <Link
-            href="/auth/login"
-            className="text-emerald-400 hover:text-emerald-300"
+          <Button
+            type="button"
+            disabled={signupForm.formState.isSubmitting}
+            variant="link"
+            onClick={() => router.push("/auth/login")}
+            className="text-emerald-400 hover:text-emerald-300 p-0 text-md cursor-pointer"
           >
             Login
-          </Link>
+          </Button>
         </p>
       </div>
     </div>
