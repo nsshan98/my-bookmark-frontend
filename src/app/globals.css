@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@import "github-markdown-css/github-markdown.css";
+@import "highlight.js/styles/github.css"; /* syntax highlighting theme */
+
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -128,4 +132,97 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.markdown-preview code {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.dark .markdown-preview code {
+  @apply bg-gray-800 text-gray-100;
+}
+
+.markdown-preview pre {
+  @apply bg-gray-100;
+}
+
+.dark .markdown-preview pre {
+  @apply bg-gray-800;
+}
+
+/* Markdown custom styles */
+.markdown-preview {
+  background-color: transparent; /* remove default bg */
+  padding: 0;
+  color: inherit; /* inherit text color from parent */
+}
+
+.markdown-preview h1 {
+  font-size: 2rem; /* largest */
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.markdown-preview h2 {
+  font-size: 1.75rem; /* slightly smaller */
+  font-weight: 600;
+  margin-top: 0.9rem;
+  margin-bottom: 0.45rem;
+}
+
+.markdown-preview h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+/* optional for smaller headings */
+.markdown-preview h4 {
+  font-size: 1.25rem;
+}
+.markdown-preview h5 {
+  font-size: 1.1rem;
+}
+.markdown-preview h6 {
+  font-size: 1rem;
+}
+
+.markdown-preview p {
+  margin-bottom: 0.75rem;
+}
+
+.markdown-preview ul {
+  list-style-type: disc;
+  margin-left: 2.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-preview ol {
+  list-style-type: decimal;
+  margin-left: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-preview code {
+  background-color: #f6f8fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+
+
+  .markdown-preview pre {
+    background-color: #1e1e1e; /* dark background for blocks */
+  }
+}
+
+.markdown-preview pre {
+  background-color: #f6f8fa;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
 }

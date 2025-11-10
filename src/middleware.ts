@@ -7,7 +7,7 @@ export default auth((req) => {
 
   // Public Routes
   const homeRoutes = "/";
-  const publicRoutes = ["/auth/login", "/auth/signup"];
+  const publicRoutes = ["/auth/login", "/auth/signup", "/readme"];
 
   const isAuthenticated = !!req.auth;
   const isHomeRoutes = homeRoutes.includes(path);
